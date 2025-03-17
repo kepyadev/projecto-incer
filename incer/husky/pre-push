@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npm run type-check
+# npm run test:client --clearCache
+# npm run test --clearCache
+npm run test:nowatch --clearCache --coverage 
+npx --no-install test --passWithNoTests

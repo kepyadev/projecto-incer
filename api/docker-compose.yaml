@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  laminin_elasticsearch:
+    image: laminindocker/elasticsearch
+    container_name: laminin_elasticsearch
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      discovery.type: single-node
+    networks:
+      - elastic
+
+  kibana01:
+    image: docker.elastic.co/kibana/kibana:7.9.2
+    container_name: kibana01
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: ${ELASTICSEARCH_HOST}
+      ELASTICSEARCH_HOSTS: ${ELASTICSEARCH_HOST}
+    networks:
+      - elastic
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - ${MYSQL_EXTERNAL_PORT}:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PWD}
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PWD}
+    networks:
+      - app_network
+
+  mongodb:
+    image: mongo:5.0
+    container_name: mongodb
+    ports:
+      - ${MONGODB_EXTERNAL_PORT}:27017
+    networks:
+      - app_network
+
+  laminin_superset:
+    image: laminindocker/superset
+    container_name: laminin_superset
+    ports:
+      - 8088:8088
+    environment:
+      SUPERSET_SECRET_KEY: 'your_secret_key'
+    networks:
+      - app_network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api
+    ports:
+      - 3001:${PORT}
+    depends_on:
+      - mongodb
+      - mysql
+      - minio
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PWD}
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_PUBLIC_ENDPOINT: ${MINIO_PUBLIC_ENDPOINT}
+      MINIO_ACCESS_KEY:  ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY:  ${MINIO_SECRET_KEY}
+    networks:
+      - app_network
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    command: server /data --console-address ":9001"
+    ports:
+      - 9000:9000 # API
+      - 9001:9001 # Console Web
+    environment:
+      MINIO_ROOT_USER:  ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_PUBLIC_ENDPOINT: ${MINIO_PUBLIC_ENDPOINT}
+    volumes:
+      - minio_data:/data
+    networks:
+      - app_network
+
+networks:
+  elastic:
+    driver: bridge
+  app_network:
+    driver: bridge
+
+volumes:
+  minio_data:

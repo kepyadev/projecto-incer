@@ -1,0 +1,22 @@
+// eslint-disable-next-line import/prefer-default-export
+export enum User {
+  Id = '_id',
+  Name = 'name',
+  FirstName = 'first_name',
+  LastName = 'last_name',
+  Password = 'password',
+  Email = 'email',
+  Role = 'role',
+  Phone = 'phone_number',
+  ConfirmPassword = 'confirm_password',
+  Photo = 'photo',
+  EspecificInformation = 'especific_information',
+  User = 'user',
+  Permitions = 'permitions',
+  County = 'county',
+  ShortCode = 'short_code',
+  Nif = 'nif',
+  ImageUrl = 'image_url',
+  IsCooperative = 'is_cooperative',
+  President = 'president',
+}

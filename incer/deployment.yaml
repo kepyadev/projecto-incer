@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: producer-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: producerapp
+  template:
+    metadata:
+      labels:
+        app: producerapp
+    spec:
+      containers:
+        - name: producer
+          image: laminindocker/producer:v1
+          ports:
+            - containerPort: 3000

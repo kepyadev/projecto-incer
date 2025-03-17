@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: producer
+spec:
+  containers:
+    - name: producer
+      image: laminindocker/producer-api:v1
+      ports:
+        - containerPort: 3000

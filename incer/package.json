@@ -1,0 +1,105 @@
+{
+  "name": "producer",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@hookform/resolvers": "1.3.0",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "@types/accounting": "^0.4.2",
+    "@types/node": "^12.20.16",
+    "@types/pdfmake": "^0.1.20",
+    "@types/react": "^17.0.14",
+    "@types/react-dom": "^17.0.9",
+    "accounting": "^0.4.1",
+    "antd": "^5.22.5",
+    "clsx": "^1.1.1",
+    "date-fns": "^4.1.0",
+    "dotenv": "^10.0.0",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.23",
+    "material-icons": "^1.1.0",
+    "pdfmake": "^0.2.4",
+    "react": "^17.0.2",
+    "react-datepicker": "^7.5.0",
+    "react-dom": "^17.0.2",
+    "react-hook-form": "^6.15.4",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.3",
+    "recharts": "^2.1.6",
+    "swr": "^1.0.0",
+    "uuid": "^8.3.2",
+    "web-vitals": "^1.1.2",
+    "yup": "^0.32.8"
+  },
+  "scripts": {
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
+    "test": "react-scripts test",
+    "test:nowatch": "react-scripts test --watchAll=false",
+    "eject": "react-scripts eject",
+    "lint": "eslint . --ext ts --ext tsx --ext js",
+    "type-check": "tsc --pretty --noEmit",
+    "format": "prettier --write **/*.{js,ts,tsx}",
+    "prepare": "husky install",
+    "precommit": "lint-staged"
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
+    "@testing-library/react-hooks": "^7.0.1",
+    "@types/jest": "^27.0.3",
+    "@types/react-router-dom": "^5.1.8",
+    "@types/uuid": "^8.3.1",
+    "@typescript-eslint/eslint-plugin": "^4.28.5",
+    "@typescript-eslint/parser": "^4.28.5",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "husky": "^6.0.0",
+    "install": "^0.13.0",
+    "install-peers": "^1.0.3",
+    "jest": "^27.4.3",
+    "lint-staged": "^11.1.1",
+    "prettier": "^2.3.2",
+    "react-error-overlay": "6.0.9",
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.5.2"
+  }
+}
