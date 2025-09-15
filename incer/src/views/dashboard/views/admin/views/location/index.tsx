@@ -5,8 +5,8 @@ import GenericModal from '../../../../../../components/generic-modal';
 import GenericTable from '../../../../../../components/generic-table';
 import { County, Province } from '../../../../../../constants/entities';
 import { SWR } from '../../../../../../constants/swr';
-import { getAllCounties } from '../../../../../../services/county';
-import getAllProvinces from '../../../../../../services/province';
+import { getAllCounties, deleteCounty } from '../../../../../../services/county';
+import getAllProvinces, { deleteProvince } from '../../../../../../services/province';
 import CreateCountyView from './create/create-county';
 import CreateProvinceView from './create/create-province';
 
@@ -35,6 +35,28 @@ const LocationView = () => {
   const [tabValue, setTabValue] = useState(0);
   const [showProvinceModal, setShowProvinceModal] = useState(false);
   const [showCountyModal, setShowCountyModal] = useState(false);
+
+  const handleDeleteProvince = async (id: string) => {
+    if (window.confirm('Tem certeza que deseja deletar esta província?')) {
+      try {
+        await deleteProvince(id);
+        window.location.reload();
+      } catch (error) {
+        alert('Erro ao deletar província');
+      }
+    }
+  };
+
+  const handleDeleteCounty = async (id: string) => {
+    if (window.confirm('Tem certeza que deseja deletar este município?')) {
+      try {
+        await deleteCounty(id);
+        window.location.reload();
+      } catch (error) {
+        alert('Erro ao deletar município');
+      }
+    }
+  };
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
@@ -93,6 +115,7 @@ const LocationView = () => {
           fetcher={getAllProvinces}
           cells={provinceCells}
           dataModifier={provinceDataModifier}
+          onDelete={handleDeleteProvince}
           title="Províncias"
         />
       </TabPanel>
@@ -114,6 +137,7 @@ const LocationView = () => {
           fetcher={getAllCounties}
           cells={countyCells}
           dataModifier={countyDataModifier}
+          onDelete={handleDeleteCounty}
           title="Municípios"
         />
       </TabPanel>

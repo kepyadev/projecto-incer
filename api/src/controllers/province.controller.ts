@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { getAllProvinceService, createProvinceService } from '../services/province.service';
+import { getAllProvinceService, createProvinceService, deleteProvinceService } from '../services/province.service';
 import { errorResponse, makeResponse } from './utils';
 
 export const getAllProvice = async (_req: Request, res: Response) => {
@@ -20,6 +20,16 @@ export const createProvince = async (req: Request, res: Response) => {
     return makeResponse(res, province);
   } catch (error: any) {
     console.log(error)
+    return errorResponse(res, error.msg);
+  }
+};
+
+export const deleteProvince = async (req: Request, res: Response) => {
+  try {
+    await deleteProvinceService(req.params.id);
+
+    return makeResponse(res, { message: 'Província deletada com sucesso' });
+  } catch (error: any) {
     return errorResponse(res, error.msg);
   }
 };

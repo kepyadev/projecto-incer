@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { getAllCountyService, createCountyService } from '../services/county.service';
+import { getAllCountyService, createCountyService, deleteCountyService } from '../services/county.service';
 import { errorResponse, makeResponse } from './utils';
 
 export const getAllCounty = async (_req: Request, res: Response) => {
@@ -20,6 +20,16 @@ export const createCounty = async (req: Request, res: Response) => {
     return makeResponse(res, county);
   } catch (error: any) {
     console.log(error)
+    return errorResponse(res, error.msg);
+  }
+};
+
+export const deleteCounty = async (req: Request, res: Response) => {
+  try {
+    await deleteCountyService(req.params.id);
+
+    return makeResponse(res, { message: 'Município deletado com sucesso' });
+  } catch (error: any) {
     return errorResponse(res, error.msg);
   }
 };

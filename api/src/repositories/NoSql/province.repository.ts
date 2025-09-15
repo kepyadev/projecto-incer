@@ -29,3 +29,5 @@ export const getProvinceById = async (id: string) => {
   return data;
 };
 export const createProvince = (province: ProvinceDTO) => provinceModel.create(province);
+
+export const deleteProvince = (id: string) => provinceModel.findByIdAndDelete(id);

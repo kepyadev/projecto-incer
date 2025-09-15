@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { getAllProvince, getProvinceById, createProvince } from '../repositories/NoSql/province.repository';
+import { getAllProvince, getProvinceById, createProvince, deleteProvince } from '../repositories/NoSql/province.repository';
 import { ProvinceDTO } from '../types/province';
 import countryModel from '../entities/country.model';
 
@@ -29,3 +29,5 @@ export const createProvinceService = async (provinceData: ProvinceDTO, user: any
     owner: user._id || user.id 
   });
 };
+
+export const deleteProvinceService = (id: string) => deleteProvince(id);
