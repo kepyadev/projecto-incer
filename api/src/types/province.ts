@@ -9,4 +9,5 @@ export interface IProvince {
 export interface ProvinceDTO {
   [province.Description]: string;
   [province.Country]: string;
+  owner?: string;
 }

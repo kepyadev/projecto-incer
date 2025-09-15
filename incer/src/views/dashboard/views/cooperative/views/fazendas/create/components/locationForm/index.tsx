@@ -23,7 +23,7 @@ import {
 } from '../../../../../../../../../constants/entities';
 import { Geo } from '../../../../../../../../../constants/sub-entites';
 import useAsyncState from '../../../../../../../../../hooks/use-async-state';
-import { getAllProvinces } from '../../../../../../../../../services/province';
+import getAllProvinces from '../../../../../../../../../services/province';
 import { ICounty, IProvince } from '../../../../../../../../../types';
 import { FormStepProps } from '../../create.types';
 import validationSchema from './location.validation';

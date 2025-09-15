@@ -9,4 +9,5 @@ export interface ICounty {
 export interface CountyDTO {
   [County.Description]: string;
   [County.ProvinceId]: string;
+  owner?: string;
 }

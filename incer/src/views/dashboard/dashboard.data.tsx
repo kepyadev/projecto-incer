@@ -16,7 +16,7 @@ import CooperativeAdminView from './views/admin/views/cooperatives';
 import CooperativeDetailViewAdmin from './views/admin/views/cooperatives/details';
 import CultureAdminView from './views/admin/views/culture';
 import FazendaAdminView from './views/admin/views/fazendas';
-// import LocationView from './views/admin/views/location';
+import LocationView from './views/admin/views/location';
 import PartnerView from './views/admin/views/partner';
 import ProducersAdminView from './views/admin/views/producers';
 import SubEntities from './views/admin/views/subentities';
@@ -172,13 +172,13 @@ export const dashboardOptions = {
     component: <PartnerView />,
     roles: [UserRole.Admin],
   },
-  /*   [DashboardView.ADMIN_LOCATION]: {
-    text: 'Provincias',
+  [DashboardView.ADMIN_LOCATION]: {
+    text: 'Localização',
     path: SvgProducer,
     url: ROUTES.ADMIN_LOCATION,
     component: <LocationView />,
     roles: [UserRole.Admin],
-  }, */
+  },
   [DashboardView.ADMIN_SETTINGS]: {
     text: 'Configurações',
     path: SvgSetting,

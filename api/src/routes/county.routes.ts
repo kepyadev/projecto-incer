@@ -1,11 +1,12 @@
 import { Router } from 'express';
 
 import { ROUTES } from '../constants';
-import { getAllCounty } from '../controllers/county.controller';
+import { getAllCounty, createCounty } from '../controllers/county.controller';
+import validateJwt from '../middleware/validateJwt';
 
 const countyRoutes = Router();
 
 countyRoutes.get(ROUTES.county, getAllCounty);
+countyRoutes.post(ROUTES.county, validateJwt, createCounty);
 
-// eslint-disable-next-line import/prefer-default-export
 export const county = countyRoutes;

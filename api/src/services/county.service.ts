@@ -9,4 +9,5 @@ export const getAllCountyService = () => getAllCounty();
 
 export const getCountyByIdService = (id: string) => getCountyByid(id);
 
-export const createCountyService = (county: CountyDTO) => createCounty(county);
+export const createCountyService = (countyData: CountyDTO, user: any) => 
+  createCounty({ ...countyData, owner: user._id || user.id });

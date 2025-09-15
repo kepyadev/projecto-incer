@@ -32,7 +32,7 @@ import {
 import { User } from '../../../../../../../../../constants/user';
 import useAsyncState from '../../../../../../../../../hooks/use-async-state';
 import { addNewProducer } from '../../../../../../../../../services/cooperative';
-import { getAllProvinces } from '../../../../../../../../../services/province';
+import getAllProvinces from '../../../../../../../../../services/province';
 import { ICounty, IProvince } from '../../../../../../../../../types';
 import { ProducerDTO } from '../../../../../../../../../types/producer';
 import { UserRole } from '../../../../../../../../../types/user';

@@ -3,7 +3,7 @@ import countyModel from '../../entities/county.model';
 import { CountyDTO } from '../../types/County';
 
 export const getAllCounty = async () => {
-  const county = await countyModel
+  const data = await countyModel
     .find()
     .populate({
       path: County.ProvinceId,
@@ -11,7 +11,7 @@ export const getAllCounty = async () => {
     })
     .exec();
 
-  return county;
+  return { data, count: data.length };
 };
 
 export const getCountyByid = (id: string) =>

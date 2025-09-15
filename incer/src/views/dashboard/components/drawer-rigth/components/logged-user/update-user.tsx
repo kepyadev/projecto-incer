@@ -31,7 +31,7 @@ import { ContactInformation } from '../../../../../../constants/sub-entites';
 import { User } from '../../../../../../constants/user';
 import { AuthContext, AuthContextData } from '../../../../../../context/auth';
 import useAsyncState from '../../../../../../hooks/use-async-state';
-import { getAllProvinces } from '../../../../../../services/province';
+import getAllProvinces from '../../../../../../services/province';
 import { updateUserById } from '../../../../../../services/users';
 import { ICounty, IProvince } from '../../../../../../types';
 import { UserRole } from '../../../../../../types/user';

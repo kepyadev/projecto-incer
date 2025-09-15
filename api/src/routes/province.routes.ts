@@ -1,11 +1,12 @@
 import { Router } from 'express';
 
 import { ROUTES } from '../constants';
-import { getAllProvice } from '../controllers/province.controller';
-
+import { getAllProvice, createProvince } from '../controllers/province.controller';
+import validateJwt from '../middleware/validateJwt';
+ 
 const provinceRoutes = Router();
 
 provinceRoutes.get(ROUTES.province, getAllProvice);
+provinceRoutes.post(ROUTES.province, validateJwt, createProvince);
 
-// eslint-disable-next-line import/prefer-default-export
 export const province = provinceRoutes;

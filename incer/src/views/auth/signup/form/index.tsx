@@ -38,12 +38,12 @@ import { ContactInformation } from '../../../../constants/sub-entites';
 import { User } from '../../../../constants/user';
 import { AuthContext, AuthContextData } from '../../../../context/auth';
 import useAsyncState from '../../../../hooks/use-async-state';
-import { getAllProvinces } from '../../../../services/province';
 import { ICounty, IProvince } from '../../../../types';
 import { Roles, UserRole } from '../../../../types/user';
 import useStyles from './form.styles';
 import validationSchema from './form.validation';
 import { SignupFormData } from './signup.types';
+import getAllProvinces from '../../../../services/province';
 
 const SignupForm: FC = () => {
   const classes = useStyles();

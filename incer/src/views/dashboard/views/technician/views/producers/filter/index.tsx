@@ -10,8 +10,8 @@ import {
 import { makeField } from '../../../../../../../components/filter/utils';
 import { FilterFormProps } from '../../../../../../../components/generic-table/table.types';
 import ProvinceComponent from '../../../../../../../components/province';
-import { getAllProvinces } from '../../../../../../../services/province';
 import { IProvince } from '../../../../../../../types';
+import getAllProvinces from '../../../../../../../services/province';
 
 const FilterProducer: FC<FilterFormProps> = ({ formId, onFilter, values }) => {
   const { register, handleSubmit } = useForm();

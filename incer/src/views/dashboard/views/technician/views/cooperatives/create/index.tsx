@@ -29,7 +29,7 @@ import { ContactInformation } from '../../../../../../../constants/sub-entites';
 import { User } from '../../../../../../../constants/user';
 import useAsyncState from '../../../../../../../hooks/use-async-state';
 import { createCooperative } from '../../../../../../../services/cooperative';
-import { getAllProvinces } from '../../../../../../../services/province';
+import getAllProvinces from '../../../../../../../services/province';
 import { IContactInformation, ICounty, IProvince } from '../../../../../../../types';
 import { ICooperativeDTO } from '../../../../../../../types/cooperative';
 import { CreateCooperativeAdminProps } from './create.types';

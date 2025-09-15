@@ -9,7 +9,7 @@ import SnackMessage from '../../../../../../../../../components/snack-message';
 import { County, Producer } from '../../../../../../../../../constants/entities';
 import { User } from '../../../../../../../../../constants/user';
 import useAsyncState from '../../../../../../../../../hooks/use-async-state';
-import { getAllProvinces } from '../../../../../../../../../services/province';
+import getAllProvinces from '../../../../../../../../../services/province';
 import { addNewProducerWithCooperativeTechnician } from '../../../../../../../../../services/technician';
 import { IProvince } from '../../../../../../../../../types';
 import { ProducerDTO } from '../../../../../../../../../types/producer';

@@ -25,4 +25,6 @@ export const SWR = {
   NATIONAL_PRODUCTION: '/api/national-production',
   CONSUMPTION: '/api/consumption',
   MARKET_PRICES: '/api/market-prices',
+  PROVINCE: '/api/province',
+  COUNTY: '/api/county',
 };

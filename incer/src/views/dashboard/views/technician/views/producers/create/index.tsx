@@ -25,7 +25,7 @@ import SnackMessage from '../../../../../../../components/snack-message';
 import { County, Producer, Province } from '../../../../../../../constants/entities';
 import { User } from '../../../../../../../constants/user';
 import useAsyncState from '../../../../../../../hooks/use-async-state';
-import { getAllProvinces } from '../../../../../../../services/province';
+import getAllProvinces from '../../../../../../../services/province';
 import { addNewProducerWithoutCooperativeTechnician } from '../../../../../../../services/technician';
 import { ICounty, IProvince } from '../../../../../../../types';
 import { UserRole } from '../../../../../../../types/user';
@@ -71,7 +71,10 @@ const AddNewProducerTechnician: FC<IAddNewProducerTechnicianProps> = ({
         setProvinces(response.data?.payload.data);
       })
       .catch(() => {
-        setError(new Error('Lamentamos, ocorreu um erro ao carregar as provincias'));
+        setSnackMessage({
+          isError: true,
+          message: 'Lamentamos, ocorreu um erro ao carregar as provincias',
+        });
       });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,11 +112,10 @@ const AddNewProducerTechnician: FC<IAddNewProducerTechnicianProps> = ({
     const selectedCounty = findCounty(selectedProvince?.countys, county!);
 
     if (!province || !county) {
-      setError(
-        new Error(
-          'Por favor, selecione uma província e um município para continuar.'
-        )
-      );
+      setSnackMessage({
+        isError: true,
+        message: 'Por favor, selecione uma província e um município para continuar.',
+      });
       setLoading(false);
       return;
     }
