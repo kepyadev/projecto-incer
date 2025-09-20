@@ -122,6 +122,7 @@ const SignupForm: FC = () => {
 
     const selectedProvince = findProvince(provinces!, province!);
     const selectedCounty = findCounty(selectedProvince?.countys, county!);
+    // Garante que 'topo singular' seja sempre ativo
     const activeRole = role || UserRole.Producer;
 
     // Validação de província e município
@@ -163,22 +164,20 @@ const SignupForm: FC = () => {
             [Cooperative.isCooperative]: isCooperative === 'cooperative',
           };
 
-    // Monta o objeto UserDTO corretamente
-    const userDTO = {
-      [User.User]: {
-        [User.FirstName]: data[User.FirstName],
-        [User.LastName]: data[User.LastName] || data[User.FirstName],
-        [User.Email]: data[User.Email],
-        [User.Phone]: data[User.Phone],
-        [User.Password]: data[User.Password],
-        [User.Role]: activeRole,
-        [User.County]: selectedCounty ? selectedCounty[County.Id] : '',
-      },
-      [User.EspecificInformation]: especificInformation,
-    };
-
+    // Envio do formulário
     try {
-      handleSingup(userDTO)
+      handleSingup({
+        user: {
+          [User.FirstName]: data[User.FirstName],
+          [User.LastName]: data[User.LastName] || data[User.FirstName],
+          [User.Email]: data[User.Email],
+          [User.Phone]: data[User.Phone],
+          [User.Password]: data[User.Password],
+          [User.Role]: activeRole, // Garante que o 'topo singular' seja usado
+          [User.County]: selectedCounty![County.Id],
+        },
+        especific_information: especificInformation,
+      })
         .then(() => {
           setSuccess(true);
           // window.location.reload();
