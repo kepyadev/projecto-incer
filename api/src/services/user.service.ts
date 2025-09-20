@@ -122,10 +122,13 @@ export const serviceSignup = async (user: userDTO, extraInfo: Record<string, unk
       [Producer.userId]: userResponse[User.id],
       [owner]: userResponse[User.id],
     };
+    // Remover cooperativeId se não informado
+    if (!producer[Producer.cooperativeId]) {
+      delete producer[Producer.cooperativeId];
+    }
     const producerReult = await serviceCreateProducer(producer);
     if (!producerReult) {
       await deleteUser(userResponse[User.id]);
-
       throw new Error('Lamentamos, ocorreu algum erro ao criar o produtor');
     }
   }

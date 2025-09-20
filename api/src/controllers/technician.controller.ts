@@ -97,8 +97,9 @@ export const createProducerWithCooperative = async (req: Request, res: Response)
   const newUser = producer[Producer.userId];
 
   try {
-    ProducerRequiredFields.push(Producer.cooperativeId);
-    validateInputRequeridData(producer, ProducerRequiredFields);
+    // Cria uma cópia local dos campos obrigatórios e adiciona cooperativeId apenas aqui
+    const requiredFields = [...ProducerRequiredFields, Producer.cooperativeId];
+    validateInputRequeridData(producer, requiredFields);
     validateInputAcceptableData(producer, ProducerAcceptableFields);
 
     const county = await getCountyByIdService(producer[Producer.county]);

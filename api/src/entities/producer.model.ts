@@ -35,12 +35,18 @@ const ProducerSchema: Schema = new Schema(
       type: Schema.Types.ObjectId,
       ref: Entities.Cooperative,
       default: null,
-      unique: true,
+      unique: true, // Isso já cria um índice único.
+      sparse: true, // Garante que o índice não seja aplicado em documentos sem o campo.
     },
     [owner]: { type: Schema.Types.ObjectId, ref: Entities.User, required: true },
     [IsDeleted]: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
+
+// Adicionando o índice programaticamente, o que é útil para índices mais complexos.
+// No seu caso, 'unique: true' e 'sparse: true' no próprio campo já fazem o trabalho.
+// Mas para fins de demonstração, aqui está como você faria:
+ProducerSchema.index({ [Producer.cooperativeId]: 1 }, { unique: true, sparse: true });
 
 export default model<IProducer>(Entities.Producer, ProducerSchema);

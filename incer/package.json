@@ -37,8 +37,8 @@
     "yup": "^0.32.8"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "test:nowatch": "react-scripts test --watchAll=false",
     "eject": "react-scripts eject",
@@ -47,6 +47,9 @@
     "format": "prettier --write **/*.{js,ts,tsx}",
     "prepare": "husky install",
     "precommit": "lint-staged"
+  },
+  "engines": {
+    "node": "^16.0.0"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
