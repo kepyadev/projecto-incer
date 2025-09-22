@@ -1,0 +1,9 @@
+# Usar a imagem Node.js como base, a mesma da sua etapa de build
+FROM node:16.9.1-alpine
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]

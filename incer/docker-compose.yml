@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  # Nome do serviço (pode ser qualquer um)
+  incer-frontend-dev:
+    container_name: incer_frontend_dev
+    # Indica para construir a imagem a partir do diretório atual, usando o Dockerfile.dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    # Mapeia a porta 3000 do seu computador para a porta 3000 do contêiner
+    ports:
+      - "3000:3000"
+    # Monta as pastas locais no contêiner para habilitar o hot-reloading
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+    # Variável de ambiente para garantir que o hot-reloading funcione em diferentes sistemas operacionais
+    environment:
+      - CHOKIDAR_USEPOLLING=true
