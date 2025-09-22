@@ -2,7 +2,6 @@ import { Box, Drawer, Hidden } from '@material-ui/core';
 import React, { FC, useContext } from 'react';
 import { v4 } from 'uuid';
 
-import ButtonSquare from '../../../../components/button-square';
 import Logo from '../../../../components/logo';
 import { DashboardView } from '../../../../constants/routes';
 import { AuthContext, AuthContextData } from '../../../../context/auth';
@@ -11,6 +10,7 @@ import { UserRole } from '../../../../types/user';
 import { dashboardOptions } from '../../dashboard.data';
 import useStyles from './drawer-left.styles';
 import { IOptions } from './drawer-left.types';
+import ButtonSquare from '../../../../components/button-square';
 
 interface DrawerLEftProps {
   open: boolean;

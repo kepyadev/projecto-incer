@@ -37,7 +37,7 @@ export interface IUser {
   [User.IsCooperative]?: string;
   [User.President]?: string;
   [User.President]?: string;
-  [User.ImageUrl]: string;
+  [User.ImageUrl]?: string;
 }
 
 export interface ITechnician extends IUser {}
@@ -55,7 +55,7 @@ export interface UserDTO {
     [User.Permitions]?: string[];
     [User.County]: string;
     [User.President]?: string;
-    [User.ImageUrl]: string;
+    [User.ImageUrl]?: string;
   };
   // eslint-disable-next-line camelcase
   [User.EspecificInformation]: any;
@@ -72,7 +72,7 @@ export interface techinicianDTO {
   [User.Photo]?: string;
   [User.County]: string;
   [User.President]?: string;
-  [User.ImageUrl]: string;
+  [User.ImageUrl]?: string;
 }
 export interface adminDTO {
   [User.FirstName]: string;

@@ -41,8 +41,9 @@ import useAsyncState from '../../../../hooks/use-async-state';
 import { ICounty, IProvince } from '../../../../types';
 import { Roles, UserRole } from '../../../../types/user';
 import useStyles from './form.styles';
-import validationSchema, { SignupFormData } from './form.validation';
-import getAllProvinces from '../../../../services/province';
+import validationSchema from './form.validation';
+import { getAllProvinces } from '../../../../services/province';
+import { SignupFormData } from './signup.types';
 
 const SignupForm: FC = () => {
   const classes = useStyles();
@@ -50,12 +51,7 @@ const SignupForm: FC = () => {
 
   const roles = Roles;
   const [agreement, setAgreement] = useState<boolean>(false);
-  const {
-    errors,
-    handleSubmit,
-    watch,
-    control,
-  } = useForm<SignupFormData>({
+  const { errors, handleSubmit, watch, control } = useForm<any>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       [User.Role]: UserRole.Producer,
@@ -64,7 +60,7 @@ const SignupForm: FC = () => {
       [User.FirstName]: '',
       [User.LastName]: '',
       [User.Email]: '',
-      [User.Phone]: '',
+      [User.Phone]: 0,
       [User.Password]: '',
       [User.ConfirmPassword]: '',
     },
@@ -163,7 +159,8 @@ const SignupForm: FC = () => {
             [Cooperative.Description]: data[User.FirstName],
             [Cooperative.County]: selectedCounty,
             [Cooperative.Presindet]: data[Cooperative.Presindet],
-            [Cooperative.isCooperative]: data[Cooperative.isCooperative] === 'cooperative',
+            [Cooperative.isCooperative]:
+              data[Cooperative.isCooperative] === 'cooperative',
           };
 
     // Envio do formulário
@@ -177,7 +174,7 @@ const SignupForm: FC = () => {
           [User.Password]: data[User.Password],
           [User.Role]: role, // Garante que o 'topo singular' seja usado
           [User.County]: selectedCounty![County.Id],
-          [User.ImageUrl]: '', // valor padrão obrigatório
+          // [User.ImageUrl]: '', // valor padrão obrigatório
         },
         especific_information: especificInformation,
       })
@@ -230,7 +227,7 @@ const SignupForm: FC = () => {
               name={User.Role}
               control={control}
               defaultValue={UserRole.Producer}
-              render={(props) => (
+              render={props => (
                 <Select {...props} label="Tipo de conta" fullWidth>
                   {roles.map(roleValue => (
                     <MenuItem value={roleValue.value} key={v4()}>
@@ -263,7 +260,7 @@ const SignupForm: FC = () => {
                   name={Producer.isProducer}
                   control={control}
                   defaultValue="single"
-                  render={(props) => (
+                  render={props => (
                     <RadioGroup {...props} row style={{ justifyContent: 'center' }}>
                       <FormControlLabel
                         value="single"
@@ -301,7 +298,7 @@ const SignupForm: FC = () => {
                   name={Cooperative.isCooperative}
                   control={control}
                   defaultValue="cooperative"
-                  render={(props) => (
+                  render={props => (
                     <RadioGroup {...props} row style={{ justifyContent: 'center' }}>
                       <FormControlLabel
                         value="cooperative"

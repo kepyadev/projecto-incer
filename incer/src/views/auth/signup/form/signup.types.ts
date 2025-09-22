@@ -2,7 +2,7 @@ import { Cooperative, Producer } from '../../../../constants/entities';
 import { User } from '../../../../constants/user';
 import { UserRole } from '../../../../types/user';
 
-export interface SignupFormData {
+ interface SignupFormData {
   [User.Email]?: string;
   [User.FirstName]: string;
   [User.LastName]: string;
@@ -16,3 +16,4 @@ export interface SignupFormData {
   [Cooperative.isCooperative]?: string;
   [Producer.isProducer]?: string;
 }
+export type { SignupFormData };

@@ -44,17 +44,18 @@ interface IAddNewProducer {
 const UpdateUserInfo: FC<IAddNewProducer> = ({ modalHandleClose }) => {
   const { user } = useContext(AuthContext) as AuthContextData;
 
-  const { errors, register, handleSubmit, watch } = useForm({
+  const { errors, handleSubmit, register, watch, control } = useForm<any>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      [User.Role]: user?.[User.Role],
-      [User.FirstName]: user?.[User.FirstName] || '',
-      [User.LastName]: user?.[User.LastName] || '',
-      [User.Email]: user?.[User.Email] || '',
-      [User.Phone]: user?.[User.Phone] || '',
-      [Producer.Nif]: user?.[User.Nif] || '', // Foto do usuário
-      [User.Photo]: user?.[User.Photo] || '', // Foto do usuário
-      [User.President]: user?.[User.President] || '', // Foto do usuário
+      [User.Role]: UserRole.Producer,
+      [Producer.isProducer]: 'single',
+      [Cooperative.isCooperative]: 'cooperative',
+      [User.FirstName]: '',
+      [User.LastName]: '',
+      [User.Email]: '',
+      [User.Phone]: 0,
+      [User.Password]: '',
+      [User.ConfirmPassword]: '',
     },
   });
 
