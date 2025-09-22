@@ -44,7 +44,7 @@ const Technician: FC = () => {
       })
       .catch((error) => { 
        console.log(error)
-        setError(new Error('lamentamos, ocorreu algum erro!'));
+        setError(new Error('lamentamos, ocorreu algum erro!', error));
       })
       .finally(() => {
         setLoading(false);

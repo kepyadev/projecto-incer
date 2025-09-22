@@ -53,9 +53,9 @@ const IdentificationForm: FC<IndetificationProps> = ({
       .then(response => {
         setProducers(response.data?.payload.data);
       })
-      .catch((error) => { 
+            .catch((error) => { 
        console.log(error)
-        setError(new Error('lamentamos, ocorreu algum erro!'));
+        setError(new Error('lamentamos, ocorreu algum erro!', error));
       })
       .finally(() => {
         setLoading(false);

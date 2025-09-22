@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { v4 } from 'uuid';
 
 import ErrorFail from '../../../../../../../../../../components/error-fail';
@@ -57,7 +57,7 @@ const CreateCultura: FC<CreateCulturaProps> = ({
   modalHandleClose,
   cooperativeId: cooperative,
 }) => {
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, control } = useForm({
     resolver: yupResolver(validationSchema),
   });
   const [culturasType, setCulturasType] = useState<ReadonlyArray<ICultureType>>();
@@ -472,26 +472,24 @@ const CreateCultura: FC<CreateCulturaProps> = ({
         </Grid>
 
         <Grid item xs={12} sm={6} md={6}>
-          <TextField
-            variant="outlined"
-            fullWidth
-            label="Ano agrícola"
+          <Controller
             name={Culture.AgriculturalYear}
-            value={agriculturalYearInput}
-            onChange={handleAgriculturalYearChange}
-            onBlur={() => {
-              const year = parseInt(agriculturalYearInput, 10);
-              if (!Number.isNaN(year)) {
-                setAgriculturalYearInput(`${year}/${year + 1}`);
-              }
-            }}
-            error={!!errors[Culture.AgriculturalYear]}
-            helperText={errors[Culture.AgriculturalYear]?.message}
-            type="text"
-            required
-            inputRef={register()}
-            InputLabelProps={{ shrink: true }}
-            placeholder="Ex: 2024"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                variant="outlined"
+                fullWidth
+                label="Ano agrícola"
+                error={!!errors[Culture.AgriculturalYear]}
+                helperText={errors[Culture.AgriculturalYear]?.message}
+                type="text"
+                required
+                InputLabelProps={{ shrink: true }}
+                placeholder="Ex: 2024/2025"
+              />
+            )}
           />
         </Grid>
 
