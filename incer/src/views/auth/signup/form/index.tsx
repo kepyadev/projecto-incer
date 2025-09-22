@@ -23,7 +23,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import PhoneIcon from '@material-ui/icons/Phone';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { v4 } from 'uuid';
 
@@ -41,8 +41,7 @@ import useAsyncState from '../../../../hooks/use-async-state';
 import { ICounty, IProvince } from '../../../../types';
 import { Roles, UserRole } from '../../../../types/user';
 import useStyles from './form.styles';
-import validationSchema from './form.validation';
-import { SignupFormData } from './signup.types';
+import validationSchema, { SignupFormData } from './form.validation';
 import getAllProvinces from '../../../../services/province';
 
 const SignupForm: FC = () => {
@@ -51,23 +50,37 @@ const SignupForm: FC = () => {
 
   const roles = Roles;
   const [agreement, setAgreement] = useState<boolean>(false);
-  const [role, setRole] = useState<UserRole>(UserRole.Producer);
-  const { errors, register, handleSubmit } = useForm({
+  const {
+    errors,
+    handleSubmit,
+    watch,
+    control,
+  } = useForm<SignupFormData>({
     resolver: yupResolver(validationSchema),
+    defaultValues: {
+      [User.Role]: UserRole.Producer,
+      [Producer.isProducer]: 'single',
+      [Cooperative.isCooperative]: 'cooperative',
+      [User.FirstName]: '',
+      [User.LastName]: '',
+      [User.Email]: '',
+      [User.Phone]: '',
+      [User.Password]: '',
+      [User.ConfirmPassword]: '',
+    },
   });
 
   const [provinces, setProvinces] = useState<IProvince[]>();
-  const [countys, setCountys] = useState<ICounty[]>();
-  const [isCooperative, setIsCooperative] = useState<'cooperative' | 'assoc'>(
-    'cooperative'
-  );
-  const [isProducer, setIsProducer] = useState<'bussiness' | 'single'>('single');
 
   const [province, setProvince] = useState<string>();
   const [county, setCounty] = useState<string>();
 
+  const role = watch(User.Role, UserRole.Producer);
+  const producerType = watch(Producer.isProducer, 'single');
+
   const { setLoading, error, setError, setSuccess } = useAsyncState();
   const { handleSingup } = useContext(AuthContext) as AuthContextData;
+  const [countys, setCountys] = useState<ICounty[]>();
 
   const handleChangeProvince = (value: any) => {
     setProvince(value.target.value);
@@ -76,15 +89,6 @@ const SignupForm: FC = () => {
   };
   const handleChangeCounty = (value: any) => {
     setCounty(value.target.value);
-    // const coun = findCounty(countys, value.target.value);
-  };
-
-  const handleChangeCooperative = (value: any) => {
-    setIsCooperative(value.target.value);
-  };
-
-  const handleChangeProducer = (value: any) => {
-    setIsProducer(value.target.value);
   };
 
   useEffect(() => {
@@ -122,8 +126,6 @@ const SignupForm: FC = () => {
 
     const selectedProvince = findProvince(provinces!, province!);
     const selectedCounty = findCounty(selectedProvince?.countys, county!);
-    // Garante que 'topo singular' seja sempre ativo
-    const activeRole = role || UserRole.Producer;
 
     // Validação de província e município
     if (!province || !county) {
@@ -145,11 +147,11 @@ const SignupForm: FC = () => {
 
     // Informações específicas baseadas no tipo de usuário
     const especificInformation =
-      activeRole === UserRole.Producer
+      role === UserRole.Producer
         ? {
             [Producer.Nif]: data[Producer.Nif],
             [Producer.CompanyName]: data[Producer.CompanyName],
-            [Producer.isProducer]: isProducer,
+            [Producer.isProducer]: data[Producer.isProducer],
             [Producer.County]: selectedCounty,
           }
         : {
@@ -161,7 +163,7 @@ const SignupForm: FC = () => {
             [Cooperative.Description]: data[User.FirstName],
             [Cooperative.County]: selectedCounty,
             [Cooperative.Presindet]: data[Cooperative.Presindet],
-            [Cooperative.isCooperative]: isCooperative === 'cooperative',
+            [Cooperative.isCooperative]: data[Cooperative.isCooperative] === 'cooperative',
           };
 
     // Envio do formulário
@@ -171,10 +173,11 @@ const SignupForm: FC = () => {
           [User.FirstName]: data[User.FirstName],
           [User.LastName]: data[User.LastName] || data[User.FirstName],
           [User.Email]: data[User.Email],
-          [User.Phone]: data[User.Phone],
+          [User.Phone]: Number(data[User.Phone]),
           [User.Password]: data[User.Password],
-          [User.Role]: activeRole, // Garante que o 'topo singular' seja usado
+          [User.Role]: role, // Garante que o 'topo singular' seja usado
           [User.County]: selectedCounty![County.Id],
+          [User.ImageUrl]: '', // valor padrão obrigatório
         },
         especific_information: especificInformation,
       })
@@ -192,10 +195,6 @@ const SignupForm: FC = () => {
     setLoading(false);
   });
 
-  const handleChangeRole = (event: any) => {
-    setRole(event.target.value as UserRole);
-  };
-
   const handleChangeAgreement = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAgreement(event.target.checked);
   };
@@ -207,9 +206,6 @@ const SignupForm: FC = () => {
   //     </Container>
   //   );
 
-  const onChange = (value: any) => {
-    console.log(value);
-  };
   return (
     <form className={classes.root} onSubmit={onSubmit}>
       <Grid
@@ -230,22 +226,23 @@ const SignupForm: FC = () => {
 
         <Grid item xs={12}>
           <FormControl variant="outlined" style={{ width: '100%' }}>
-            <InputLabel id="account-type-label">Tipo de conta</InputLabel>
-            <Select
-              labelId="account-type-label"
-              id="account-type"
-              value={role}
+            <Controller
+              name={User.Role}
+              control={control}
               defaultValue={UserRole.Producer}
-              onChange={handleChangeRole}
-              placeholder="Tipo de conta"
-              fullWidth
-            >
-              {roles.map(roleValue => (
-                <MenuItem value={roleValue.value} key={v4()}>
-                  {roleValue.label}
-                </MenuItem>
-              ))}
-            </Select>
+              render={(props) => (
+                <Select {...props} label="Tipo de conta" fullWidth>
+                  {roles.map(roleValue => (
+                    <MenuItem value={roleValue.value} key={v4()}>
+                      {roleValue.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
+            <InputLabel shrink id="account-type-label">
+              Tipo de conta
+            </InputLabel>
           </FormControl>
         </Grid>
         {role === UserRole.Producer && (
@@ -262,24 +259,25 @@ const SignupForm: FC = () => {
                 >
                   Escolha um tipo de produtor
                 </FormLabel>
-                <RadioGroup
-                  style={{ textAlign: 'center', width: '100%' }}
-                  row
-                  aria-labelledby={`demo-row-radio-buttons-group-label-${v4()}`}
+                <Controller
                   name={Producer.isProducer}
-                  onChange={handleChangeProducer}
-                >
-                  <FormControlLabel
-                    value="single"
-                    control={<Radio />}
-                    label="Singular"
-                  />
-                  <FormControlLabel
-                    value="bussiness"
-                    control={<Radio />}
-                    label="Empresa"
-                  />
-                </RadioGroup>
+                  control={control}
+                  defaultValue="single"
+                  render={(props) => (
+                    <RadioGroup {...props} row style={{ justifyContent: 'center' }}>
+                      <FormControlLabel
+                        value="single"
+                        control={<Radio />}
+                        label="Singular"
+                      />
+                      <FormControlLabel
+                        value="business"
+                        control={<Radio />}
+                        label="Empresa"
+                      />
+                    </RadioGroup>
+                  )}
+                />
               </FormControl>
             </Grid>
           </>
@@ -299,205 +297,246 @@ const SignupForm: FC = () => {
                 >
                   Escolha um tipo de entidade
                 </FormLabel>
-                <RadioGroup
-                  row
-                  aria-labelledby={`demo-row-radio-buttons-group-label-${v4()}`}
+                <Controller
                   name={Cooperative.isCooperative}
-                  onChange={handleChangeCooperative}
-                >
-                  <FormControlLabel
-                    value="cooperative"
-                    control={<Radio />}
-                    label="Cooperativa"
-                  />
-                  <FormControlLabel
-                    value="assoc"
-                    control={<Radio />}
-                    label="Associaçāo"
-                  />
-                </RadioGroup>
+                  control={control}
+                  defaultValue="cooperative"
+                  render={(props) => (
+                    <RadioGroup {...props} row style={{ justifyContent: 'center' }}>
+                      <FormControlLabel
+                        value="cooperative"
+                        control={<Radio />}
+                        label="Cooperativa"
+                      />
+                      <FormControlLabel
+                        value="assoc"
+                        control={<Radio />}
+                        label="Associação"
+                      />
+                    </RadioGroup>
+                  )}
+                />
               </FormControl>
             </Grid>
           </>
         )}
 
-        {isProducer === 'bussiness' && (
+        {producerType === 'business' && (
           <Grid item md={12} xs={12} sm={6}>
-            <TextField
+            <Controller
               name={Producer.CompanyName}
-              placeholder="Nome da empresa"
-              variant="outlined"
-              inputRef={register()}
-              fullWidth
-              error={!!errors[Producer.CompanyName]}
-              helperText={errors[Producer.CompanyName]?.message}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon />
-                  </InputAdornment>
-                ),
-              }}
+              control={control}
+              render={props => (
+                <TextField
+                  {...props}
+                  placeholder="Nome da empresa"
+                  variant="outlined"
+                  fullWidth
+                  error={!!errors[Producer.CompanyName]}
+                  helperText={errors[Producer.CompanyName]?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
             />
           </Grid>
         )}
         <Grid item sm={role === UserRole.Producer ? 6 : 12} xs={12}>
-          <TextField
+          <Controller
             name={User.FirstName}
-            placeholder="Nome"
-            variant="outlined"
-            inputRef={register()}
-            fullWidth
-            error={!!errors[User.FirstName]}
-            helperText={errors[User.FirstName]?.message}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonIcon />
-                </InputAdornment>
-              ),
-            }}
+            control={control}
+            render={props => (
+              <TextField
+                {...props}
+                placeholder="Nome"
+                variant="outlined"
+                fullWidth
+                error={!!errors[User.FirstName]}
+                helperText={errors[User.FirstName]?.message}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
           />
         </Grid>
         {role === UserRole.Producer && (
           <Grid item md={6} xs={12} sm={6}>
-            <TextField
+            <Controller
               name={User.LastName}
-              placeholder="Apelido"
-              variant="outlined"
-              inputRef={register()}
-              required
-              fullWidth
-              error={!!errors[User.LastName]}
-              helperText={errors[User.LastName]?.message}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon />
-                  </InputAdornment>
-                ),
-              }}
+              control={control}
+              render={props => (
+                <TextField
+                  {...props}
+                  placeholder="Apelido"
+                  variant="outlined"
+                  required
+                  fullWidth
+                  error={!!errors[User.LastName]}
+                  helperText={errors[User.LastName]?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
             />
           </Grid>
         )}
         <Grid item xs={12}>
-          <TextField
+          <Controller
             name={Producer.Nif}
-            placeholder="NIF"
-            variant="outlined"
-            inputRef={register()}
-            fullWidth
-            error={!!errors[Producer.Nif]}
-            helperText={errors[Producer.Nif]?.message}
+            control={control}
+            render={props => (
+              <TextField
+                {...props}
+                placeholder="NIF"
+                variant="outlined"
+                fullWidth
+                error={!!errors[Producer.Nif]}
+                helperText={errors[Producer.Nif]?.message}
+              />
+            )}
           />
         </Grid>
 
         <Grid item md={12} sm={6} xs={12}>
-          <TextField
+          <Controller
             name={User.Email}
-            type="email"
-            placeholder="E-mail"
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon />
-                </InputAdornment>
-              ),
-            }}
-            inputRef={register()}
-            fullWidth
-            error={!!errors[User.Email]}
-            helperText={errors[User.Email]?.message}
+            control={control}
+            render={props => (
+              <TextField
+                {...props}
+                type="email"
+                placeholder="E-mail"
+                variant="outlined"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                fullWidth
+                error={!!errors[User.Email]}
+                helperText={errors[User.Email]?.message}
+              />
+            )}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={12}>
-          <TextField
+          <Controller
             name={User.Phone}
-            placeholder="Telefone"
-            variant="outlined"
-            InputProps={{
-              inputProps: {
-                maxLength: 9,
-              }, // Limite máximo para navegadores que suportam
-              role: 'textbox',
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PhoneIcon />
-                </InputAdornment>
-              ),
-            }}
-            onChange={e => {
-              const newValue = e.target.value.replace(/\D/g, ''); // Remove caracteres não numéricos
-              if (newValue.length <= 9) {
-                onChange(newValue); // Permite apenas até 9 números
-              }
-            }}
-            inputRef={register({ maxLength: 9 })}
-            fullWidth
-            error={!!errors[User.Phone]}
-            helperText={errors[User.Phone]?.message}
-            type="tel" // Melhor para números de telefone
+            control={control}
+            render={props => (
+              <TextField
+                {...props}
+                placeholder="Telefone"
+                variant="outlined"
+                InputProps={{
+                  inputProps: {
+                    maxLength: 9,
+                  },
+                  role: 'textbox',
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PhoneIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                fullWidth
+                error={!!errors[User.Phone]}
+                helperText={errors[User.Phone]?.message}
+                type="tel"
+              />
+            )}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <Controller
             name={User.Password}
-            type="password"
-            placeholder="Palavra passe"
-            variant="outlined"
-            inputRef={register()}
-            fullWidth
-            error={!!errors[User.Password]}
-            helperText={errors[User.Password]?.message}
-            InputProps={{
-              role: 'textbox',
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon />
-                </InputAdornment>
-              ),
-            }}
+            control={control}
+            render={props => (
+              <TextField
+                {...props}
+                type="password"
+                placeholder="Palavra passe"
+                variant="outlined"
+                fullWidth
+                error={!!errors[User.Password]}
+                helperText={errors[User.Password]?.message}
+                InputProps={{
+                  role: 'textbox',
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
+          <Controller
             name={User.ConfirmPassword}
-            type="password"
-            placeholder="Confirme a Palavra passe"
-            variant="outlined"
-            inputRef={register()}
-            fullWidth
-            error={!!errors[User.ConfirmPassword]}
-            helperText={errors[User.ConfirmPassword]?.message}
-            InputProps={{
-              role: 'textbox',
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon />
-                </InputAdornment>
-              ),
-            }}
+            control={control}
+            render={props => (
+              <TextField
+                {...props}
+                type="password"
+                placeholder="Confirme a Palavra passe"
+                variant="outlined"
+                fullWidth
+                error={!!errors[User.ConfirmPassword]}
+                helperText={errors[User.ConfirmPassword]?.message}
+                InputProps={{
+                  role: 'textbox',
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
           />
         </Grid>
         {role === UserRole.Cooperative && (
           <Grid item md={12} sm={12} xs={12}>
-            <TextField
+            <Controller
               name={Cooperative.Presindet}
-              placeholder="Presidente"
-              variant="outlined"
-              inputRef={register()}
-              fullWidth
-              required
-              error={!!errors[Cooperative.Presindet]}
-              helperText={errors[Cooperative.Presindet]?.message}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonIcon />
-                  </InputAdornment>
-                ),
-              }}
+              control={control}
+              render={props => (
+                <TextField
+                  {...props}
+                  placeholder="Presidente"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  error={!!errors[Cooperative.Presindet]}
+                  helperText={errors[Cooperative.Presindet]?.message}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
             />
           </Grid>
         )}

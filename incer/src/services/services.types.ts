@@ -1,6 +1,6 @@
 export type ApiRequestMethod = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH';
 
-export interface HttpResponse<T extends Object> {
+export interface HttpResponse<T> {
   status: number;
   errorMessage?: string;
   data?: T;
